@@ -4,7 +4,7 @@ const productCont = require("../controllers/Products");
 
 router.get("/:id", (req, res, next) => {
   productCont
-    .getProduct(req.params.id ? req.params.id : null)
+    .getProduct(req.params.id != "all" ? req.params.id : null)
     .then(data => {
       return res.json(data);
     })
