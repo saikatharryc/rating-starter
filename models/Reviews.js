@@ -15,7 +15,7 @@ const ReviewSchema = new mongoose.Schema(
     title: { type: String, required: true },
     description: { type: String },
     photos: { type: Array },
-    rating: { type: Number, default: 0 }
+    rating: { type: Number, default: 0, max: 5, min: 0 }
   },
   {
     timestamps: true

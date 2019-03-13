@@ -1,13 +1,8 @@
 const Products = require("../models/Products");
 
-const createProduct = async productPayload => {
-  const savableDoc = new Products(productPayload);
-  savableDoc.save((err, created) => {
-    if (err) {
-      return Promise.reject(new Error(err));
-    }
-    return created;
-  });
+const createProduct = async (productPayload, userId) => {
+  const savableDoc = new Products({ ...productPayload, addedBy: userId });
+  return savableDoc.save();
 };
 const getProduct = async (id = null) => {
   let query = {};

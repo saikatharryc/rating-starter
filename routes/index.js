@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 
 const authRoute = require("./auth");
-const review = require("./Review");
+const review = require("./review");
+const product = require("./products");
 
 const adminRoutes = require("./admin");
 
@@ -78,6 +79,7 @@ api.includeRoutes = app => {
   app.use("/api/v1/admin", adminRoutes);
 
   app.use("/api/v1/review", review);
+  app.use("/api/v1/product", product);
 };
 
 module.exports = api;

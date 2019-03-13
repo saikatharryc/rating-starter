@@ -1,20 +1,20 @@
 const Products = require("../models/Products");
 const Reviews = require("../models/Reviews");
 
-const saveReview = async reviewPayload => {
+const saveReview = reviewPayload => {
   const savableReview = new Reviews(reviewPayload);
-  savableReview.save((err, created) => {
+  savableReview.save((err, updated) => {
     if (err) {
-      return Promise.reject(new Error(err));
+      return Promise.reject({ status: 500, message: "Some error occured" });
     }
-    return created;
+    return updateRating(reviewPayload.productId, reviewPayload.rating);
   });
 };
 
 const updateRating = async (productId, rating) => {
   const prevProduct = await Products.findOne({ _id: productId }).exec();
   if (!prevProduct) {
-    return Promise.reject("no product found");
+    return Promise.reject({ status: 404, message: "no product found" });
   }
   const newAverage =
     (prevProduct.avgRating * prevProduct.noOfReviews + rating) /
@@ -26,14 +26,24 @@ const updateRating = async (productId, rating) => {
 };
 
 const postReview = reviewPayload => {
-  let promiseArr = [];
-  promiseArr.push(saveReview(reviewPayload));
-  promiseArr.push(updateRating(reviewPayload.productId, reviewPayload.rating));
-  return Promise.all(promiseArr);
+  return Reviews.findOne({
+    userId: reviewPayload.userId,
+    productId: reviewPayload.productId
+  })
+    .then(data => {
+      if (!data) {
+        return saveReview(reviewPayload);
+      } else {
+        return Promise.reject({ status: 400, message: "already reviewed" });
+      }
+    })
+    .catch(err => {
+      return Promise.reject(err);
+    });
 };
 
 const getReviewFiltered = (key, value) => {
-  return Products.find({ [key]: value }).exec();
+  return Reviews.find({ [key]: value }).exec();
 };
 
 module.exports = {

@@ -4,7 +4,7 @@ const productCont = require("../../controllers/Products");
 
 router.post("/", (req, res, next) => {
   productCont
-    .createProduct(req.body)
+    .createProduct(req.body, req.user._id)
     .then(data => {
       return res.json(data);
     })

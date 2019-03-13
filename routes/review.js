@@ -6,7 +6,7 @@ const reviewCont = require("../controllers/Reviews");
  */
 router.post("/", (req, res, next) => {
   reviewCont
-    .postReview(req.body)
+    .postReview({ ...req.body, userId: req.user._id })
     .then(data => {
       return res.json(data);
     })
@@ -18,23 +18,27 @@ router.post("/", (req, res, next) => {
 /*
  * get product reviews
  */
-router.get("/:type/:id", (req, res, next) => {
-  const types = ["productId", "userId"];
-  if (!req.params.type || types.indexOf(req.param.type) == -1) {
-    return next({ status: 400, message: "invalid type" });
+router.get("/productId/:id", (req, res, next) => {
+  if (!req.params.id) {
+    return next({ status: 400, message: "invalid product id" });
   }
 
-  if (!req.params.id) {
-    return next({ status: 400, message: "invalid " + req.params.type });
-  }
-  let id = "";
-  if (req.params.type == "userId") {
-    id = req.user._id;
-  } else {
-    id = req.params.id;
-  }
   reviewCont
-    .getReviewFiltered(req.params.type, id)
+    .getReviewFiltered("productId", req.params.id)
+    .then(data => {
+      return res.json(data);
+    })
+    .catch(error => {
+      return next(error);
+    });
+});
+
+/*
+ * get product reviews
+ */
+router.get("/", (req, res, next) => {
+  reviewCont
+    .getReviewFiltered("userId", req.user._id)
     .then(data => {
       return res.json(data);
     })

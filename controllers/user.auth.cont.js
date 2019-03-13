@@ -23,7 +23,7 @@ const login = body => {
       .exec()
       .then(user => {
         if (!user) {
-          return reject(new Error("User Not found"));
+          return reject({ status: 404, message: "User Not found" });
         }
         user.comparePassword(body.password, (error, isMatch) => {
           if (isMatch && !error) {
@@ -32,7 +32,7 @@ const login = body => {
             });
             return resolve({ token: token, user: user });
           } else {
-            return reject(new Error("wrong password"));
+            return reject({ status: 400, message: "wrong password" });
           }
         });
       })
