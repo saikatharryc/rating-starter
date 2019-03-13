@@ -1,11 +1,13 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config");
 
-var authRoute = require("./auth");
-var authEnabledRoutes = require("./authenticatedRoute");
+const authRoute = require("./auth");
+const review = require("./Review");
+
+const adminRoutes = require("./admin");
 
 const api = {};
-const isAuth = (req,res,next) => {
+const isAuth = (req, res, next) => {
   if (req.headers.authorization) {
     jwt.verify(
       req.headers.authorization,
@@ -20,8 +22,42 @@ const isAuth = (req,res,next) => {
         req.user = {
           _id: decoded._id,
           email: decoded.email,
-          username: decoded.username,
-          wallet: decoded.wallet || null
+          username: decoded.username
+        };
+        next();
+      }
+    );
+  } else {
+    return next({
+      message: "Unauthenticated",
+      head: "Header is not present in the request.",
+      status: 401
+    });
+  }
+};
+
+const isAdmin = (req, res, next) => {
+  if (req.headers.authorization) {
+    jwt.verify(
+      req.headers.authorization,
+      config.JWT.secret,
+      (error, decoded) => {
+        if (error) {
+          return next({
+            message: "Unauthenticated",
+            status: 401
+          });
+        }
+        if (!decoded.admin) {
+          return next({
+            message: "You are not allowed to access.",
+            status: 403
+          });
+        }
+        req.user = {
+          _id: decoded._id,
+          email: decoded.email,
+          username: decoded.username
         };
         next();
       }
@@ -36,10 +72,12 @@ const isAuth = (req,res,next) => {
 };
 api.includeRoutes = app => {
   app.use("/auth", authRoute);
+  app.use("/api/v1/*", isAuth); //authenticated routes
 
-  app.use("/apis/*", isAuth); //authenticated routes
+  app.use("/api/v1/admin*", isAdmin); //authenticated admin routes
+  app.use("/api/v1/admin", adminRoutes);
 
-  app.use("/apis/authEnabled", authEnabledRoutes);
+  app.use("/api/v1/review", review);
 };
 
 module.exports = api;

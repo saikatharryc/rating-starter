@@ -35,20 +35,5 @@ router.post("/login", (req, res, next) => {
       return next(error);
     });
 });
-router.get("/verification/:id", (req, res, next) => {
-  if (!req.params.id) {
-    return next({
-      status: "400",
-      message: "Invalid request"
-    });
-  }
-  UserAuthCont.verification(req.params.id)
-    .then(data => {
-      return res.json(data);
-    })
-    .catch(error => {
-      return next(error);
-    });
-});
 
 module.exports = router;

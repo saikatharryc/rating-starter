@@ -2,7 +2,7 @@ const config = {
   MONGO: {
     URI:
       process.env.MONGO_URL ||
-      "mongodb://<admin>:<password>@<host>:<port>/<db name | default admin>",
+      "mongodb://saikatharryc:saikat95@ds337985.mlab.com:37985/casa",
     OPTIONS: { useNewUrlParser: true }
   },
   JWT: {

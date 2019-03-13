@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const products = require("./Products");
 
-router.get("/amIautheticated", (req, res, next) => {
-  return res.json({ yeah: true });
-});
+router.use("/", products);
+
 module.exports = router;
