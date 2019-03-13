@@ -10,12 +10,10 @@ router.post("/signup", (req, res, next) => {
       status: 400
     });
   }
-  const currenthost="http://"+req.headers.host;
-  UserAuthCont.register(currenthost,req.body)
+  UserAuthCont.register(req.body)
     .then(data => {
       return res.json({
-        message:
-          "please confirm your email to login,\n an confirmation link sent to your registered mail ID."
+        message: "account created successfully,please login!"
       });
     })
     .catch(error => {
