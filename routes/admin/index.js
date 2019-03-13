@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const products = require("./Products");
+const products = require("./products");
 
 router.use("/", products);
 
