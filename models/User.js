@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique:true
+    unique: true
   },
   password: {
     type: String,
@@ -16,14 +16,14 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique:true
+    unique: true
   },
-  emailVerified:{
-    type:Boolean,
-    default:false
+  admin: {
+    type: Boolean,
+    default: false
   }
 });
-UserSchema.plugin(beautifyUnique, { message: 'Error, {PATH} already Exists.' });
+UserSchema.plugin(beautifyUnique, { message: "Error, {PATH} already Exists." });
 UserSchema.pre("save", function(next) {
   var user = this;
   if (this.isModified("password") || this.isNew) {
@@ -46,7 +46,7 @@ UserSchema.pre("save", function(next) {
 
 UserSchema.methods.comparePassword = function(pass, cb) {
   //as password field property has select is false
-  Users.findOne({ _id: this._id,emailVerified:true })
+  Users.findOne({ _id: this._id })
     .select("_id")
     .select("+password")
     .exec()
@@ -62,7 +62,6 @@ UserSchema.methods.comparePassword = function(pass, cb) {
       return cb(error);
     });
 };
-
 
 const Users = mongoose.model("Users", UserSchema);
 module.exports = Users;

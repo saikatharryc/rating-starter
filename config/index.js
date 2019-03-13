@@ -6,7 +6,7 @@ const config = {
     OPTIONS: { useNewUrlParser: true }
   },
   JWT: {
-    secret: "uyg2hx3ub3iuzoxuo",
+    secret: process.env.SECRET || "uyg2hx3ub3iuzoxuo",
     expire: 3600
   }
 };
