@@ -2,27 +2,30 @@ const mongoose = require("mongoose");
 const beautifyUnique = require("mongoose-unique-validator");
 const bcrypt = require("bcrypt-nodejs");
 
-const UserSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true
+const UserSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    password: {
+      type: String,
+      select: false,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    admin: {
+      type: Boolean,
+      default: false
+    }
   },
-  password: {
-    type: String,
-    select: false,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  admin: {
-    type: Boolean,
-    default: false
-  }
-});
+  { timestamps: true }
+);
 UserSchema.plugin(beautifyUnique, { message: "Error, {PATH} already Exists." });
 UserSchema.pre("save", function(next) {
   var user = this;
